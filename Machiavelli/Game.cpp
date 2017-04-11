@@ -30,6 +30,9 @@
 #include <chrono>
 #include <random>
 
+#include <fstream>
+#include <iostream>
+
 Game::Game() :
 	file_reader(new FileReader())
 {
@@ -46,7 +49,8 @@ Game::Game() :
 		"kaarten",
 		"vernietig",
 		"volgende",
-		"chat"
+		"chat",
+		"dummy"
 	};
 
 	//fill character map
@@ -253,6 +257,11 @@ bool Game::Execute(std::shared_ptr<ClientCommand> command)
 		return true;
 	}
 
+	if (cmd.compare("dummy") == 0) {
+		dummyimporting();
+		return true;
+	}
+
 	//When the cards are devided
 	if (roundSetup) {
 		if (cmd.compare("kies") == 0 && YourTurn(command)) {
@@ -377,6 +386,96 @@ void Game::WriteChatLine(const std::pair<std::string, std::string> &line)
 	for (auto &i : players) {
 		i->write(finished_line);
 	}
+}
+
+int dummyimporting() {
+	char data[100];
+
+	// open a file in write mode.
+	//std::ofstream outfile;
+	//outfile.open("afile.dat");
+
+	//std::cout << "Writing to the file" << std::endl;
+	//std::cout << "Enter your name: ";
+	//std::cin.getline(data, 100);
+
+	//// write inputted data into the file.
+	//outfile << data << std::endl;
+
+	//std::cout << "Enter your age: ";
+	//std::cin >> data;
+	//std::cin.ignore();
+
+	//// again write inputted data into the file.
+	//outfile << data << std::endl;
+
+	//// close the opened file.
+	//outfile.close();
+
+	// open a file in read mode.
+	std::ifstream infile;
+	infile.open("Bouwkaarten.csv");
+
+	std::cout << "Reading from the file" << std::endl;
+	infile >> data;
+
+	// write the data at the screen.
+	std::cout << data << std::endl;
+
+	// again read the data from the file and display it.
+	infile >> data;
+	std::cout << data << std::endl;
+
+	// close the opened file.
+	infile.close();
+
+	return 0;
+
+}
+
+int Game::dummyimporting()
+{
+	char data[100];
+
+	// open a file in write mode.
+	//std::ofstream outfile;
+	//outfile.open("afile.dat");
+
+	//std::cout << "Writing to the file" << std::endl;
+	//std::cout << "Enter your name: ";
+	//std::cin.getline(data, 100);
+
+	//// write inputted data into the file.
+	//outfile << data << std::endl;
+
+	//std::cout << "Enter your age: ";
+	//std::cin >> data;
+	//std::cin.ignore();
+
+	//// again write inputted data into the file.
+	//outfile << data << std::endl;
+
+	//// close the opened file.
+	//outfile.close();
+
+	// open a file in read mode.
+	std::ifstream infile;
+	infile.open("Bouwkaarten.csv");
+
+	std::cout << "Reading from the file" << std::endl;
+	infile >> data;
+
+	// write the data at the screen.
+	std::cout << data << std::endl;
+
+	// again read the data from the file and display it.
+	infile >> data;
+	std::cout << data << std::endl;
+
+	// close the opened file.
+	infile.close();
+
+	return 0;
 }
 
 void Game::SetupRound()

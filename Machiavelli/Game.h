@@ -77,6 +77,7 @@ private:
 	std::shared_ptr<Player> current_player;
 	
 	//Round setup
+	int dummyimporting();
 	void SetupRound();
 	void RemoveFirstCard();
 	void ChoseCards(std::shared_ptr<ClientCommand> command, std::string cmd);
