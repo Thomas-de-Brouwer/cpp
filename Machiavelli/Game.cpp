@@ -585,7 +585,9 @@ bool Game::Murder(std::string & name)
 
 bool Game::Rob(std::string & name)
 {
-	std::cout << name << std::endl;
+	auto printName = [](std::string name) { std::cout << "de volgende persoon wordt bestolen: " << name << std::endl; };
+	printName(name);
+	//std::cout << name << std::endl;
 	for (auto &character : characterset) {
 		std::cout << character->Name() << " " << character->Order() << " " << character->Killed() << std::endl;
 		if (character->Order() > 2 && !character->Killed()) {
