@@ -74,11 +74,7 @@ Game::Game() :
 	first_finishes = false;
 	GoldReserve = 30;
 
-	//shuffle cards
-	//unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
-
-	auto engine = std::default_random_engine{};
-	std::shuffle(clean_deck.begin(), clean_deck.end(), engine);
+	std::shuffle(clean_deck.begin(), clean_deck.end(), []() { auto engine = std::default_random_engine{}; return engine; }());
 	deck = std::queue<std::unique_ptr<Card>>(std::move(clean_deck));
 
 	//cheatmode 
@@ -105,6 +101,7 @@ void Game::PrepareCharacters()
 {
 	//create all characters based on file
 	std::vector<std::string> character_lines = file_reader->Read(character_path);
+
 
 	for (auto &line : character_lines) {
 
@@ -205,7 +202,7 @@ void Game::Start()
 	current_player = players.front();
 	start_player = players.front();
 
-	for (auto &player : players) {
+	/*for (auto &player : players) {
 
 		player->Ingame(std::shared_ptr<Game>(this));
 		player->Deposit(2);
@@ -215,7 +212,20 @@ void Game::Start()
 			player->addCard(std::move(deck.front()));
 			deck.pop();
 		}
-	}
+	}*/
+
+	auto everyPlayer = [this](auto &player) {
+		player->Ingame(std::shared_ptr<Game>(this));
+		player->Deposit(2);
+		GoldReserve -= 2;
+
+		for (int i = 0; i < 4; i++) {
+			player->addCard(std::move(deck.front()));
+			deck.pop();
+		}
+	};
+	
+	std::for_each(players.begin(), players.end(), everyPlayer);
 
 	//ready game
 	if (cheat_mode)	Write("\x1b[35;40m>> CHEATMODE << De kaarten worden al voor je gekozen\n\x1b[30;40m");
@@ -388,91 +398,26 @@ void Game::WriteChatLine(const std::pair<std::string, std::string> &line)
 	}
 }
 
-int dummyimporting() {
-	char data[100];
-
-	// open a file in write mode.
-	//std::ofstream outfile;
-	//outfile.open("afile.dat");
-
-	//std::cout << "Writing to the file" << std::endl;
-	//std::cout << "Enter your name: ";
-	//std::cin.getline(data, 100);
-
-	//// write inputted data into the file.
-	//outfile << data << std::endl;
-
-	//std::cout << "Enter your age: ";
-	//std::cin >> data;
-	//std::cin.ignore();
-
-	//// again write inputted data into the file.
-	//outfile << data << std::endl;
-
-	//// close the opened file.
-	//outfile.close();
-
-	// open a file in read mode.
-	std::ifstream infile;
-	infile.open("Bouwkaarten.csv");
-
-	std::cout << "Reading from the file" << std::endl;
-	infile >> data;
-
-	// write the data at the screen.
-	std::cout << data << std::endl;
-
-	// again read the data from the file and display it.
-	infile >> data;
-	std::cout << data << std::endl;
-
-	// close the opened file.
-	infile.close();
-
-	return 0;
-
-}
-
 int Game::dummyimporting()
 {
 	char data[100];
-
-	// open a file in write mode.
-	//std::ofstream outfile;
-	//outfile.open("afile.dat");
-
-	//std::cout << "Writing to the file" << std::endl;
-	//std::cout << "Enter your name: ";
-	//std::cin.getline(data, 100);
-
-	//// write inputted data into the file.
-	//outfile << data << std::endl;
-
-	//std::cout << "Enter your age: ";
-	//std::cin >> data;
-	//std::cin.ignore();
-
-	//// again write inputted data into the file.
-	//outfile << data << std::endl;
-
-	//// close the opened file.
-	//outfile.close();
-
-	// open a file in read mode.
 	std::ifstream infile;
 	infile.open("Bouwkaarten.csv");
 
 	std::cout << "Reading from the file" << std::endl;
-	infile >> data;
 
-	// write the data at the screen.
-	std::cout << data << std::endl;
 
-	// again read the data from the file and display it.
-	infile >> data;
-	std::cout << data << std::endl;
-
-	// close the opened file.
+	for (std::string line; std::getline(infile, line); )
+	{
+		for (int i = 0; i < line.length(); i++) {
+			if (line[i] == ';') {
+				line[i] = '\n';
+			}
+		}
+		std::cout << "Kaartgegevens: ";
+		std::cout << line << std::endl;
+		std::cout << "----" << std::endl;
+	}
 	infile.close();
 
 	return 0;
